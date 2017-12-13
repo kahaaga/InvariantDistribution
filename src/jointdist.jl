@@ -75,7 +75,7 @@ function marginaldists(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
     unique_X2s = unique(X2s, 1)
     unique_X1X2s = unique(X1X2s, 1)
     unique_X2X3s = unique(X2X3s, 1)
-    JX2 = indexin(X2s, unique_X2s)
+    JX2 = indexin_rows(X2s, unique_X2s)
     JX1X2 = indexin_rows(X1X2s, unique_X1X2s)
     JX2X3 = indexin_rows(X2X3s, unique_X2X3s)
 
@@ -106,7 +106,6 @@ function marginaldists(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
     PX2X3 = zeros(Float64, size(unique_X2X3s, 1))
     for i = 1:size(unique_X2X3s, 1)
         inds = find(JX2X3 .== i)
-        @show inds
         PX2X3[i] = sum(densities[inds])
     end
     Px2x3 = zeros(Float64, size(X2X3s, 1))

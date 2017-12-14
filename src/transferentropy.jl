@@ -1,21 +1,21 @@
 """
 Compute transfer entropy from joint and marginal distributions
 """
-function te(nonempty_bins::Array{Int, 2}, joint::Vector{Float64},
-    marginals::Tuple{Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}, Vector{Float64}})
+function transferentropy(
+    unique_nonempty_bins::Array{Int, 2},
+    joint::Array{Float64, 1},
+    marginals::Tuple{Array{Float64, 1}, Array{Float64, 1}, Array{Float64, 1}})
 
     TE = 0
 
-    JY = indexin()
-
-    for i = 1:size(nonempty_bins, 1)
+    for i = 1:size(unique_nonempty_bins, 1)
         Pxyz = joint[i]
-        Py =
+        Py = marginals[1][i]
+        Pxy = marginals[2][i]
+        Pyz = marginals[3][i]
+
+        TE = TE + Pxyz * log(Pxyz * Py / (Pyz * Pxy))
     end
 
-    Pxyz=PJoint(i);
-           Py=PY(JY(i));
-           Pxy=PXY(JXY(i));
-           Pyz=PYZ(JYZ(i));
-           te=te+Pxyz*log(Pxyz*Py/(Pyz*Pxy));
+    return TE
 end

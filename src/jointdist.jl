@@ -1,7 +1,6 @@
 """
 Compute the joint distribution of variables from a triangulation of an embedding
 of the variables X and Y {(x(t), x(t-tau), y(t))}.
-
 `centroids::Array{Float, 2}` are centroids of the simplices forming the triangulation; this
 is an with size n_simplices x dim.
 `invariantdist::Array{Float64, 1}` is the invariant distribution on the triangulation
@@ -31,14 +30,22 @@ function get_nonempty_bins(centroids::Array{Float64, 2},
     startvals = [minimum(centroids[:, i]) for i in 1:dim]
     endvals = [maximum(centroids[:, i]) for i in 1:dim]
 
-    ranges = [(abs(startvals[i]) + abs(endvals[i])) for i in 1:dim]
+    ranges = [(endvals[i] - startvals[i]) for i in 1:dim]
 
     for i = 1:n_simplices
         densities[i] = invariantdist[i]
         for j = 1:dim
             stepsize = ranges[j] / δ[j]
-            pos_along_range = abs(centroids[i, j] - startvals[j])
-            nonempty_bins[i, j] = floor(Int, pos_along_range / stepsize) + 1
+
+            pos_along_range = centroids[i, j] - startvals[j]
+
+            if pos_along_range == 0
+                nonempty_bins[i, j] = 1
+            else
+                nonempty_bins[i, j] = ceil(Int, pos_along_range / stepsize)
+            end
+            #@show i, j, nonempty_bins[i, j]
+            #ind = ceil(Int, pos_along_range / stepsize)
         end
     end
 
@@ -49,10 +56,11 @@ end
 function jointdist(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
 
     unique_bins = unique(nonempty_bins, 1)
-    Pjoint = zeros(Float64, size(unique_bins))
+    Pjoint = zeros(Float64, size(unique_bins, 1))
+    Jjoint = indexin_rows(nonempty_bins, unique_bins)
 
     for i = 1:size(unique_bins, 1)
-        inds = find(all(nonempty_bins .== unique_bins[i, :].', 2))
+        inds = find(Jjoint .== i)
         Pjoint[i] = sum(densities[inds])
     end
 
@@ -61,17 +69,17 @@ function jointdist(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
 end
 
 
-function marginaldists(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
-    dim = size(nonempty_bins, 2)
+function marginaldists(unique_nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
+    dim = size(unique_nonempty_bins, 2)
 
 
     # PY
 
     # For each unique X2, sum the measure of all bins which has that X2 coordinate
-    X2s = nonempty_bins[:, 2]
+    X2s = unique_nonempty_bins[:, 2]
     X2s = reshape(X2s, length(X2s), 1)
-    X1X2s = nonempty_bins[:, 1:2]
-    X2X3s = nonempty_bins[:, 2:3]
+    X1X2s = unique_nonempty_bins[:, 1:2]
+    X2X3s = unique_nonempty_bins[:, 2:3]
     unique_X2s = unique(X2s, 1)
     unique_X1X2s = unique(X1X2s, 1)
     unique_X2X3s = unique(X2X3s, 1)
@@ -85,6 +93,7 @@ function marginaldists(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
         inds = find(JX2 .== i)
         PX2[i] = sum(densities[inds])
     end
+
     Px2 = zeros(Float64, size(X2s, 1))
 
     for i = 1:size(X2s, 1)
@@ -114,6 +123,5 @@ function marginaldists(nonempty_bins::Array{Int, 2}, densities::Vector{Float64})
         Px2x3[i] = PX2X3[JX2X3[i]]
     end
 
-    return PX2, PX1X2, PX2X3
-
+    return Px2, Px1x2, Px2x3
 end

@@ -7,8 +7,6 @@ function indexin_rows(A1::Array{Int, 2}, A2::Array{Int, 2})
         for i = 1:size(A2, 1)
             if all(A1[j, :] .== A2[i, :])
                 push!(inds, i)
-                #println("\t", A2[i, :])
-                #print #println("A1[j, :] .== A2[i, :]")
             end
         end
     end

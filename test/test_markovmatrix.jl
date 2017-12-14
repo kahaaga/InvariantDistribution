@@ -24,9 +24,11 @@
 
 
     P = markovmatrix(points, image_points, simplex_inds)
-
+    P2 = markovmatrixp(points, image_points, simplex_inds)
+    @show sum(P2, 2)
     @testset "Markov matrix" begin
         @test all(sum(P, 2) .≈ 1.0)
+        @test all(sum(P2, 2) .≈ 1.0)
     end
 
     invmeasure, inds_nonzero_simplices = invariantdist(P)

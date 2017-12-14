@@ -11,7 +11,7 @@ include("rowindexin.jl")
 include("transferentropy.jl")
 include("te_test.jl")
 
-export markovmatrix, markovmatrix_parallel, invariantdist, StateSpace, get_nonempty_bins,
+export markovmatrix, markovmatrixp, invariantdist, StateSpace, get_nonempty_bins,
     jointdist, marginaldists, indexin_rows, transferentropy, te_test
 
 # package code goes here

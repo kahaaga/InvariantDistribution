@@ -1,5 +1,9 @@
 using InvariantDistribution
+using SimplexSplitting
+using SimplexIntersection
+
 using Base.Test
 
-# write your own tests here
-@test 1 == 2
+
+#include("test_markovmatrix.jl")
+include("test_transferentropy.jl")

@@ -2,7 +2,7 @@
 Compute the invariant distribution from a Markov matrix.
 """
 function invariantdist(markovmatrix; N = 100, tolerance = 1/10^5, delta = 1/10^5)
-    count = 1
+    counter = 1
 
     M = size(markovmatrix, 1)
     # Distribution we start with (a random distribution). Normalise it.
@@ -22,14 +22,14 @@ function invariantdist(markovmatrix; N = 100, tolerance = 1/10^5, delta = 1/10^5
 
     check_points_counter = 1
 
-    while count <= N && distance >= tolerance
-        count = count + 1
+    while counter <= N && distance >= tolerance
+        counter = counter+ 1
         zerodistribution = distribution
 
         # Apply the Markov matrix to the current state of the distribution
         distribution = zerodistribution * markovmatrix
 
-        if check_points_counter <= num_checkpoints && count == check_points[check_points_counter]
+        if check_points_counter <= num_checkpoints && counter == check_points[check_points_counter]
             check_points_counter = check_points_counter + 1
             colsum_distribution = sum(distribution, 2)[1]
             if abs(colsum_distribution - 1) > delta

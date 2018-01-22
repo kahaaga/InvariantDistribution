@@ -19,35 +19,22 @@ function markovmatrix(points, image_points, simplex_inds)
         # Volume of the image of the simplex
         image_volume = abs(det([ones(1, dim + 1); image]))
 
-        # test if
-        if image_volume < tolerance
-            # Loop over image vertices
-            for col in 1:size(image, 2)
-
-              # Vertices in triangulation
-                for vertex in unique_vertex_inds
-                    v = triangulation[1][vertex, :]
-                    if isapprox(image[:, col], v)
-                        println("image simplex #", i, " = ", image, " (image_vol ",
-                              image_volume, ")\n shares vertex with point #", vertex,
-                              " in triangulation (coordinates = ", triangulation[1][vertex, :], ")\n")
-                    end
-                end
-            end
-        end
-
         for j = 1:n_simplices
             simplex = points[simplex_inds[j, :], :].'
             simplex_volume = abs(det([ones(1, dim + 1); simplex]))
 
             if (simplex_volume * image_volume > 0 && simplex_volume/image_volume > volume_tolerance)
-                P[i,j] = SimplexIntersection.simplexintersection(simplex, image)/image_volume
+                P[i, j] = SimplexIntersection.simplexintersection(simplex, image)/image_volume
+            elseif image_volume < tolerance
+                P[i, j] = 0
             end
         end
     end
 
     return P
 end
+
+
 function markovmatrixp(points, image_points, simplex_inds)
 
     const n_simplices = size(simplex_inds, 1)
@@ -69,29 +56,14 @@ function markovmatrixp(points, image_points, simplex_inds)
         # Volume of the image of the simplex
         image_volume = abs(det([ones(1, dim + 1); image]))
 
-        # test if
-        if image_volume < tolerance
-            # Loop over image vertices
-            for col in 1:size(image, 2)
-
-              # Vertices in triangulation
-                for vertex in unique_vertex_inds
-                    v = triangulation[1][vertex, :]
-                    if isapprox(image[:, col], v)
-                        println("image simplex #", i, " = ", image, " (image_vol ",
-                              image_volume, ")\n shares vertex with point #", vertex,
-                              " in triangulation (coordinates = ", triangulation[1][vertex, :], ")\n")
-                    end
-                end
-            end
-        end
-
         for j = 1:n_simplices
             simplex = points[simplex_inds[j, :], :].'
             simplex_volume = abs(det([ones(1, dim + 1); simplex]))
 
             if (simplex_volume * image_volume > 0 && simplex_volume/image_volume > volume_tolerance)
                 P[i,j] = SimplexIntersection.simplexintersection(simplex, image)/image_volume
+            elseif image_vol < tolerance
+                P[i, j] = 0
             end
         end
     end

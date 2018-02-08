@@ -24,6 +24,8 @@
 
 
     P = markovmatrix(points, image_points, simplex_inds)
+    P = mm_parse(points, image_points, simplex_inds)
+
     P2 = markovmatrixp(points, image_points, simplex_inds)
     @show sum(P2, 2)
     @testset "Markov matrix" begin

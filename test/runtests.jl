@@ -1,5 +1,8 @@
-using InvariantDistribution
+@everywhere using InvariantDistribution
+@everywhere using SimplexSplitting
+@everywhere using SimplexIntersection
+@everywhere using Distributions
+
 using Base.Test
 
-# write your own tests here
-@test 1 == 2
+include("test_mm_sparse.jl")

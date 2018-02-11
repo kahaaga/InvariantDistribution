@@ -6,3 +6,4 @@
 using Base.Test
 
 include("test_mm_sparse.jl")
+#include("test_markovmatrix.jl")

@@ -15,9 +15,14 @@ function mm_sparse(t::SimplexSplitting.Triangulation)
     Js = Vector{Int}(0)
     intvols = Vector{Float64}(0) # intersecting volumes
 
+    kdtree = KDTree(t.centroids)
+
     for i in 1:n_simplices
         imvol = t.volumes_im[i]
         t1 = time_ns()
+        # Consider only simplices in the original space that are close to any of the
+        # vertices or the centroid of this image simplex
+        inds_to_check = 
 
         @elapsed for j in 1:n_simplices
             vol = t.volumes[j]

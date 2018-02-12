@@ -11,18 +11,16 @@ function mm_p(t::SimplexSplitting.Triangulation)
     # Tolerance for similary of convex expansion coefficients of simplex vertices in simplexintersection function.
     const convex_params_tol::Float64 = 1/10^12
 
-    maxradius = max(maximum(t.radii), maximum(t.radii_im))
-
     intvols = SharedArray{Float64}(n_simplices, n_simplices) # intersecting volumes
 
-    @parallel for i in 1:n_simplices
+    @sync @parallel for i in 1:n_simplices
         imvol = t.volumes_im[i]
         for j in 1:n_simplices
             vol = t.volumes[j]
             if vol * imvol > 0 && (vol/imvol) > voltol
                 intvol = simplexintersection(
-                    view(t.points[t.simplex_inds[j, :], :]).',
-                     view(t.impoints[t.simplex_inds[i, :], :]).') / imvol
+                    t.points[t.simplex_inds[j, :], :].',
+                    t.impoints[t.simplex_inds[i, :], :].') / imvol
                 intvols[i, j] = intvol
             end
         end

@@ -1,7 +1,7 @@
 
 @testset "Invariant distribution tests" begin
    @testset "Embedding dim=$E" for E in 3:3
-      @testset "Time series length: $ts_length" for ts_length in [10, 100]
+      @testset "Time series length: $ts_length" for ts_length in [10]
          @testset "Rep #$rep" for rep in 1:1
             println("E=",E, "\tlength(ts)=", ts_length, "\n")
             t_start = time_ns()
@@ -37,11 +37,12 @@
             # The column sums of the Markov matrix all must be 1. Otherwise, we haven't
             # accounted for the entire volume of the triangulation.
             @testset "Markov matrix" begin
-                @test all(sum(Array(Mp), 2) .≈ 1.0)
+               println(sum(Mp, 2))
+               @test all(sum(Mp, 2) .≈ 1.0)
             end
 
 
-            invmeasure, inds_nonzero_simplices = invariantdist(M)
+            invmeasure, inds_nonzero_simplices = invariantdist(Array(Mp))
             t_measure = time_ns()
             #println("E=",E, "\tlength(ts)=", ts_length, "\trep=", rep, " | Markov: ", (t_markov - t_start)/10^9, " seconds for ", size(t.simplex_inds, 1), " simplices with ", nnz(M), " nonzero intersections, invmeasure: ", (t_measure - t_markov)/10^9, " seconds")
 

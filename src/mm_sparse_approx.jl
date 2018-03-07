@@ -22,13 +22,13 @@ function mm_sparse(t::SimplexSplitting.Triangulation)
         t1 = time_ns()
         # Consider only simplices in the original space that are close to any of the
         # vertices or the centroid of this image simplex
-        inds_to_check = 
+        inds_to_check =
 
         @elapsed for j in 1:n_simplices
             vol = t.volumes[j]
 
             if vol * imvol > 0 && (vol/imvol) > voltol
-                intvol = simplexintersection(t.points[t.simplex_inds[j, :], :].', t.impoints[t.simplex_inds[i, :], :].')/imvol
+                intvol = Simplices.simplexintersection(t.points[t.simplex_inds[j, :], :].', t.impoints[t.simplex_inds[i, :], :].')/imvol
 
                 if intvol > 0
                     push!(Is, i)

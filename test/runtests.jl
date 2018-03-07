@@ -9,9 +9,9 @@ else
 end
 @show nprocs()
 
-using InvariantDistribution
+using Simplices
 using SimplexSplitting
-using SimplexIntersection
+using InvariantDistribution
 using Distributions
 using Base.Test
 

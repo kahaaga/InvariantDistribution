@@ -15,15 +15,15 @@ function mm_p(t::SimplexSplitting.Triangulation)
 
     @sync @parallel for i in 1:n_simplices
         imvol = t.volumes_im[i]
+        println("\tImage #", i, "/", n_simplices)
         for j in 1:n_simplices
             vol = t.volumes[j]
             if vol * imvol > 0 && (vol/imvol) > voltol
-                intvol = simplexintersection(
-                    t.points[t.simplex_inds[j, :], :].',
-                    t.impoints[t.simplex_inds[i, :], :].') / imvol
+                intvol = Simplices.simplexintersection(t.points[t.simplex_inds[j, :], :].', t.impoints[t.simplex_inds[i, :], :].') / imvol
                 intvols[i, j] = intvol
             end
         end
     end
-    return Array(intvols)
+
+    return intvols
 end

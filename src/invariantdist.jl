@@ -53,7 +53,7 @@ function invariantdist(markovmatrix; N = 100, tolerance = 1/10^5, delta = 1/10^5
 
     #return vec(distribution.')
     # Extract the elements of the invariant measure corresponding to these indices
-    invariant_distribution = distribution[finaltriang_simplex_indices]
+    #invariant_distribution = distribution[finaltriang_simplex_indices]
 
-    return invariant_distribution, finaltriang_simplex_indices
+    return vec(distribution), finaltriang_simplex_indices
 end

@@ -44,6 +44,11 @@ function invariantize_embedding(
    max_point_remove::Int = ceil(Int, size(embedding, 1)*0.1)
    )
 
+   if size(unique(embedding, 1)) < size(embedding)
+      warn("Embedding points are not unique. Returning nothing.")
+      return nothing
+   end
+
    pts_removed = 0
    is_invariant = false
    while !is_invariant &&
@@ -57,7 +62,7 @@ function invariantize_embedding(
    if is_invariant
       return embedding[1:(size(embedding, 1) - pts_removed), :]
    else
-      return Float64[]
+      warn("Could not make embedding invariant. Returning nothing.")
+      return nothing
    end
-   warn("Could not make embedding invariant")
 end

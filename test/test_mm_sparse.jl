@@ -7,7 +7,7 @@
             t_start = time_ns()
 
             # Create an invariant embedding
-            embedding = invariant_embedding(; dist = Normal(), npts = ts_length + E - 1)
+            embedding = gaussian_embedding(ts_length + E + 10)
 
             t = triang_from_embedding(embedding)
 

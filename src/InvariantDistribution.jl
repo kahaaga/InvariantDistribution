@@ -1,5 +1,3 @@
-__precompile__()
-
 module InvariantDistribution
 
 using Simplices
@@ -32,13 +30,13 @@ export markovmatrix,
     mm_sparse,
     mm_sparse_parallel,
     mm_p,
-    mm_discrete_dense_test,
     mm_discrete_dense,
     invariant_gaussian_embedding,
     invariantize_embedding,
-    invariant_bullmap_on_cube,
-    test_mm_discrete_map
-
-# package code goes here
+    invariant_bullmap_on_cube
+# Run some examples to trigger precompilation
+t = SimplexSplitting.triang_from_embedding(SimplexSplitting.Embedding(InvariantDistribution.invariant_gaussian_embedding(npts = 10, covariance = 0.3, tau = 1)))
+mm_discrete_dense(t, n_randpts = 10)
+mm_p(t)
 
 end # module

@@ -9,7 +9,8 @@ The argument `sample_how` indicates whether the approximation should be random (
 to a Uniform distribution in the space of barycentric coordinates) or "even" in the space
 where the simplex lives (points are generated using shape-preserving splitting of simplices).
 """
-function mm_discrete_dense(t::SimplexSplitting.Triangulation;
+function mm_discrete_dense(
+        t::SimplexSplitting.Triangulation;
         n_randpts::Int = 100,
         dist::Distributions.Distribution = Distributions.Uniform(0, 1),
         sample_randomly::Bool = false,
@@ -35,15 +36,15 @@ function mm_discrete_dense(t::SimplexSplitting.Triangulation;
         image_simplex = view(t.impoints, view(t.simplex_inds, i, :), :)
 
         if prefilter
-            inds_potentially_intersecting_simplices = potentially_intersecting_simplices(t, i)
+            inds_potential_simplices = potentially_intersecting_simplices(t, i)
         else
-            inds_potentially_intersecting_simplices = 1:n_simplices
+            inds_potential_simplices = 1:n_simplices
         end
 
         for k in 1:n_randpts
             projected_point = convex_coeffs[k, :].' * image_simplex
 
-            for j in potentially_intersecting_simplices
+            for j in inds_potential_simplices
                 simplex = view(t.points, view(t.simplex_inds, j, :), :)
 
                 if contains_point(simplex, projected_point)

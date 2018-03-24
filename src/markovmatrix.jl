@@ -58,7 +58,7 @@ function markovmatrix(t::Triangulation)
         for j = 1:n_simplices
             simplex_volume = t.volumes[j]
             if (simplex_volume * image_volume > 0 && simplex_volume/image_volume > volume_tolerance)
-                P[i, j] = SimplexIntersection.simplexintersection(view(t.points[t.simplex_inds[j, :], :].', :, :), view(t.image_points[t.simplex_inds[i, :], :].', :, :))/image_volume
+                P[i, j] = Simplices.simplexintersection(view(t.points[t.simplex_inds[j, :], :].', :, :), view(t.image_points[t.simplex_inds[i, :], :].', :, :))/image_volume
             elseif image_volume < tolerance
                 P[i, j] = 0
             end

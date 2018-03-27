@@ -10,15 +10,11 @@ function estimate_invariant_probs(
         delta::Float64 = 1/10^5
         )
 
-    counter = 1
-
-    n_simplices = size(M, 1)
-
     #=
     # Start with a random distribution `Ρ` (big rho). Normalise it so that it
     # sums to 1 and forms a true probability distribution over the simplices.
     =#
-    Ρ = rand(Float64, 1, n_simplices)
+    Ρ = rand(Float64, 1, size(M, 1))
     Ρ = Ρ ./ sum(Ρ, 2)
 
     #=
@@ -38,6 +34,7 @@ function estimate_invariant_probs(
     num_checkpts = size(check_pts, 1)
     check_pts_counter = 1
 
+    counter = 1
     while counter <= N && distance >= tolerance
         counter += 1
         Ρ = distribution

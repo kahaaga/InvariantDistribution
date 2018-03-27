@@ -1,43 +1,59 @@
 """
-Compute the invariant distribution from a Markov matrix.
+Compute the invariant distribution from a Markov matrix `mm`.
 """
-function invariantdist(markovmatrix; N = 100, tolerance = 1/10^5, delta = 1/10^5)
+function invariantdist(
+        M::AbstractArray{Float64, 2};
+        N::Int = 100,
+        tolerance::Float64 = 1/10^5,
+        delta::Float64 = 1/10^5
+        )
+
     counter = 1
 
-    M = size(markovmatrix, 1)
-    # Distribution we start with (a random distribution). Normalise it.
-    zerodistribution = rand(1, M)
-    zerodistribution = zerodistribution ./ sum(zerodistribution, 2)
+    n_simplices = size(M, 1)
 
-    distribution = zerodistribution * markovmatrix
+    #=
+    # Start with a random distribution `Ρ` (big rho). Normalise it so that it
+    # sums to 1 and forms a true probability distribution over the simplices.
+    =#
+    Ρ = rand(Float64, 1, n_simplices)
+    Ρ = Ρ ./ sum(Ρ, 2)
 
-    distance = norm(distribution - zerodistribution) / norm(zerodistribution)
+    #=
+    # Start estimating the invariant distribution. We could either do this by
+    # finding the left-eigenvector of M, or by repeated application of M on Ρ
+    # until the distribution converges. Here, we use the latter approach,
+    # meaning that we iterate until Ρ doesn't change substantially between
+    # iterations.
+    =#
+    distribution = Ρ * M
 
-    check = floor(Int, 1/delta)
+    distance = norm(distribution - Ρ) / norm(Ρ)
 
-    check_points = floor.(Int, collect(1:N).' ./ check) .* collect(1:N).'
-
-    check_points = check_points[check_points .> 0]
-    num_checkpoints = size(check_points, 1)
-
-    check_points_counter = 1
+    check = floor(Int, 1 / delta)
+    check_pts = floor.(Int, collect(1:N).' ./ check) .* collect(1:N).'
+    check_pts = check_pts[check_pts .> 0]
+    num_checkpts = size(check_pts, 1)
+    check_pts_counter = 1
 
     while counter <= N && distance >= tolerance
-        counter = counter+ 1
-        zerodistribution = distribution
+        counter += 1
+        Ρ = distribution
 
         # Apply the Markov matrix to the current state of the distribution
-        distribution = zerodistribution * markovmatrix
+        distribution = Ρ * M
 
-        if check_points_counter <= num_checkpoints && counter == check_points[check_points_counter]
-            check_points_counter = check_points_counter + 1
+        if (check_pts_counter <= num_checkpts &&
+           counter == check_pts[check_pts_counter])
+
+            check_pts_counter += 1
             colsum_distribution = sum(distribution, 2)[1]
             if abs(colsum_distribution - 1) > delta
                 distribution = distribution ./ colsum_distribution
             end
         end
 
-        distance = norm(distribution - zerodistribution) / norm(zerodistribution)
+        distance = norm(distribution - Ρ) / norm(Ρ)
     end
 
     # Do the last normalisation and check
@@ -47,13 +63,12 @@ function invariantdist(markovmatrix; N = 100, tolerance = 1/10^5, delta = 1/10^5
         distribution = distribution ./ colsum_distribution
     end
 
-    # Find simplices with strictly positive measure
-    finaltriang_simplex_indices = round.(Int, SimplexSplitting.heaviside(distribution) .* collect(1:M).')
-    finaltriang_simplex_indices = finaltriang_simplex_indices[finaltriang_simplex_indices .> 0]
+    # Find simplices with strictly positive measure.
+    simplex_inds_nonzero = heaviside(distribution) .* collect(1:M).'
+    simplex_inds_nonzero = round(Int, simplex_inds_nonzero)
+    simplex_inds_nonzero = simplex_inds_nonzero[simplex_inds_nonzero .> 0]
 
-    #return vec(distribution.')
     # Extract the elements of the invariant measure corresponding to these indices
-    #invariant_distribution = distribution[finaltriang_simplex_indices]
-
-    return vec(distribution), finaltriang_simplex_indices
+    #invariant_distribution = distribution[simplex_inds_nonzero]
+    return vec(distribution), simplex_inds_nonzero
 end

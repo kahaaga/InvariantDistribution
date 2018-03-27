@@ -71,6 +71,5 @@ function estimate_invariant_probs(
     simplex_inds_nonzero = simplex_inds_nonzero[simplex_inds_nonzero .> 0]
 
     # Extract the elements of the invariant measure corresponding to these indices
-    #invariant_distribution = distribution[simplex_inds_nonzero]
     return vec(distribution), simplex_inds_nonzero
 end

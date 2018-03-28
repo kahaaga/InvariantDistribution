@@ -8,7 +8,7 @@ using SimplexSplitting
 include("invariant_maps.jl")
 include("markovmatrix.jl")
 include("statespace.jl")
-include("invariantdist.jl")
+include("estimate_invariant_probs.jl")
 include("jointdist.jl")
 include("rowindexin.jl")
 include("transferentropy.jl")
@@ -21,7 +21,7 @@ include("mm_discrete_dense.jl")
 
 export markovmatrix,
     markovmatrixp,
-    invariantdist,
+    estimate_invariant_probs,
     StateSpace,
     get_nonempty_bins,
     jointdist,

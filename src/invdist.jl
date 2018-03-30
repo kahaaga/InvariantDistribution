@@ -1,9 +1,22 @@
+using Simplices, Parameters
+
+"""
+Contains a distribution over a triangulated state space. `dist::Vector{Float64}`
+is the distribution, and `nonzero_inds::Vector{Int}` are the indices of the
+simplices with non-zero measure.
+"""
+@with_kw struct InvDist
+    dist::Vector{Float64} = Vector{Float64}() # Distribution over the simplices
+    nonzero_inds::Vector{Int} = Vector{Int}() # indices of nonzero entries
+end
+
+
 """
 Compute the invariant probability distribution from a square Markov matrix `M`.
 This is done by repeated application of `M` on an initially random distribution
 until the distribution converges.
 """
-function estimate_invariant_probs(
+function estimate_invdist(
         M::AbstractArray{Float64, 2};
         N::Int = 100,
         tolerance::Float64 = 1/10^5,
@@ -61,12 +74,11 @@ function estimate_invariant_probs(
     if abs(colsum_distribution - 1) > delta
         distribution = distribution ./ colsum_distribution
     end
-
     # Find simplices with strictly positive measure.
-    simplex_inds_nonzero = heaviside(distribution) .* collect(1:M).'
+    simplex_inds_nonzero = Simplices.heaviside(distribution) .* collect(1:size(M, 1)).'
     simplex_inds_nonzero = round(Int, simplex_inds_nonzero)
     simplex_inds_nonzero = simplex_inds_nonzero[simplex_inds_nonzero .> 0]
 
     # Extract the elements of the invariant measure corresponding to these indices
-    return vec(distribution), simplex_inds_nonzero
+    return InvDist(dist = vec(distribution), inds = simplex_inds_nonzero)
 end

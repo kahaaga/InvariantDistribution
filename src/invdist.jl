@@ -80,5 +80,5 @@ function estimate_invdist(
     simplex_inds_nonzero = simplex_inds_nonzero[simplex_inds_nonzero .> 0]
 
     # Extract the elements of the invariant measure corresponding to these indices
-    return InvDist(dist = vec(distribution), inds = simplex_inds_nonzero)
+    return InvDist(dist = vec(distribution), nonzero_inds = simplex_inds_nonzero)
 end

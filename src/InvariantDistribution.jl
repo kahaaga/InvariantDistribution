@@ -17,7 +17,7 @@ include("te_test.jl")
 include("mm_sparse.jl")
 include("mm_sparse_parallel.jl")
 include("mm_parallel.jl")
-include("mm_discrete_dense.jl")
+include("mm_dd.jl")
 
 export markovmatrix,
     markovmatrixp,
@@ -33,13 +33,14 @@ export markovmatrix,
     mm_sparse,
     mm_sparse_parallel,
     mm_p,
-    mm_discrete_dense,
     invariantize_embedding,
-    invariant_bullmap_on_cube
+    invariant_bullmap_on_cube,
+	mm_dd
+
 
 # Run some examples to trigger precompilation
 t = SimplexSplitting.triang_from_embedding(SimplexSplitting.Embedding(InvariantDistribution.invariant_gaussian_embedding(npts = 10, covariance = 0.3, tau = 1)))
-mm_discrete_dense(t, n_randpts = 10)
+mm_dd(t, n_randpts = 10)
 mm_p(t)
 
 end # module

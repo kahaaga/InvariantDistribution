@@ -16,14 +16,14 @@ function potentially_intersecting_simplices(t::Triangulation, image_i::Int)
 end
 
 
-function contains_point2!(signs, s_arr, s, point)
+function contains_point!(signs, s_arr, s, point)
 
     # Keep track of signs of determinants. If all have the same sign, the point
     # lies inside the simplex. If not, it lies outside.
     n_pts = size(s, 1)
     # Compute the first sign
     @views s_arr[1, 1:(end-1)] = point
-    @views s_arr[2:end, 1:(end-1)] =  s[2:end, :]
+    @views s_arr[2:end, 1:(end-1)] = s[2:end, :]
 
     signs[1] = sign(det(s_arr))
 
@@ -50,9 +50,9 @@ end
 
 
 function mm_dd(t::Triangulation;
-                n_randpts::Int = 100,
-                dist::Distributions.Distribution = Distributions.Uniform(0, 1),
-                sample_randomly::Bool = false)
+    n_randpts::Int = 100,
+    dist::Distributions.Distribution = Distributions.Uniform(0, 1),
+    sample_randomly::Bool = false)
 
     n_simplices = size(t.simplex_inds, 1)
     n_vertices = size(t.simplex_inds, 2)
@@ -65,24 +65,14 @@ function mm_dd(t::Triangulation;
         imsimplices[i, :, :] = t.impoints[t.simplex_inds[i, :], :]
     end
 
-    # Create a set of convex coefficients to be used for all simplices
-    if sample_randomly
-        convex_coeffs = rand(dist, n_randpts, dim + 1)
-        convex_coeffs .= convex_coeffs ./ sum(convex_coeffs, 2)
-		n_coeffs = size(convex_coeffs, 1)
-
-    else
-        minimum_split_factor = ceil(Int, n_randpts^(1 / dim))[1]
-        coeffs = SimplexSplitting.even_sampling_rules(dim, minimum_split_factor).'
-        n_coeffs = size(coeffs, 1)
-        convex_coeffs = Size(n_coeffs, dim + 1)(coeffs)
-    end
+    convex_coeffs = get_coeffs(dim, n_randpts, sample_randomly).'
+    n_coeffs = maximum(size(convex_coeffs))
 
     pt = Size(dim)(zeros(Float64, dim))
     cache_arr = Size(dim + 1, dim + 1)(zeros(Float64, 4, 4))
     cache_arr[:, dim+1] = ones(dim+1)
 
-    s_arr = Size(dim + 1, dim)(zeros(Float64, dim + 1, dim))
+    s_arr = Size(dim, dim + 1)(zeros(Float64, dim, dim + 1))
     signs = Size(dim + 1)(zeros(Float64, dim + 1))
 
     M = zeros(Float64, n_simplices, n_simplices)
@@ -91,18 +81,15 @@ function mm_dd(t::Triangulation;
         inds = potentially_intersecting_simplices(t, i)
         image = imsimplices[i, :, :]
 
-        for j in inds
-            simplex = @views simplices[j, :, :]
-
-            for c in 1:n_coeffs
-
-                @views pt = convex_coeffs[c, :].' * image
-                if contains_point2!(signs, cache_arr, simplex, pt)
+        for c in 1:n_coeffs
+            @views pt = convex_coeffs[c, :].' * image
+            for j in inds
+                simplex = @views simplices[j, :, :]
+                if contains_point!(signs, cache_arr, simplex, pt)
                     M[j, i] += 1.0
                 end
             end
         end
     end
-
     return M.' ./ n_coeffs
 end

@@ -18,8 +18,8 @@ if !("Simplices" in keys(installed))
 else
     using Simplices
 end
-
-ENV["PYTHON"]= ""; Pkg.build("PyCall")
+using PyCall, Conda; Conda.add("scipy")
+ENV["PYTHON"]= ""; Pkg.build("PyCall"); using PyCall
 
 using Simplices, SimplexSplitting, Parameters,
     StaticArrays, Distributions, InplaceOps

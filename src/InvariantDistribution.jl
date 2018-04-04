@@ -2,13 +2,10 @@ __precompile__(true)
 
 module InvariantDistribution
 
-using Simplices, SimplexSplitting, Parameters,
-    StaticArrays, Distributions, InplaceOps
 
 installed = Pkg.installed()
 if !("Pycall" in keys(installed))
     Pkg.add("PyCall")
-    ENV["PYTHON"]= ""; Pkg.build("PyCall")
 end
 
 if !("Conda" in keys(installed))
@@ -22,6 +19,10 @@ else
     using Simplices
 end
 
+ENV["PYTHON"]= ""; Pkg.build("PyCall")
+
+using Simplices, SimplexSplitting, Parameters,
+    StaticArrays, Distributions, InplaceOps
 
 include("invariant_maps.jl")
 include("statespace.jl")

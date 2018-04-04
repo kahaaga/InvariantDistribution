@@ -15,7 +15,7 @@ function mm_p(t::SimplexSplitting.Triangulation)
 
     @sync @parallel for i in 1:n_simplices
         imvol = t.volumes_im[i]
-        println("\tImage #", i, "/", n_simplices)
+        #println("\tImage #", i, "/", n_simplices)
         for j in 1:n_simplices
             vol = t.volumes[j]
             if vol * imvol > 0 && (vol/imvol) > voltol
@@ -25,5 +25,8 @@ function mm_p(t::SimplexSplitting.Triangulation)
         end
     end
 
-    return intvols
+    return Array(intvols)
+end
+
+function mm_ij()
 end

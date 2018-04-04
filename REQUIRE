@@ -1,3 +1,7 @@
 julia 0.6
 Parameters
 Distributions
+StaticArrays
+InplaceOps
+PyCall
+Conda

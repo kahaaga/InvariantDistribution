@@ -1,3 +1,4 @@
+using SimplexSplitting
 
 """
 Return a triangulation of the canonical simplex. Used for all the invariant

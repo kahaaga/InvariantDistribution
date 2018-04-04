@@ -1,4 +1,4 @@
-using Simplices, Parameters
+using Parameters
 
 """
 Contains a distribution over a triangulated state space. `dist::Vector{Float64}`
@@ -75,10 +75,10 @@ function estimate_invdist(
         distribution = distribution ./ colsum_distribution
     end
     # Find simplices with strictly positive measure.
-    simplex_inds_nonzero = Simplices.heaviside(distribution) .* collect(1:size(M, 1)).'
+    simplex_inds_nonzero = heaviside(distribution) .* collect(1:size(M, 1)).'
     simplex_inds_nonzero = round(Int, simplex_inds_nonzero)
     simplex_inds_nonzero = simplex_inds_nonzero[simplex_inds_nonzero .> 0]
 
     # Extract the elements of the invariant measure corresponding to these indices
-    return InvDist(dist = vec(distribution), inds = simplex_inds_nonzero)
+    return InvDist(dist = vec(distribution), nonzero_inds = simplex_inds_nonzero)
 end

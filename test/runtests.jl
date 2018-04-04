@@ -1,13 +1,8 @@
-# if nworkers() > 1
-#     rmprocs(workers())
-# end
-#
-# if Base.JLOptions().code_coverage == 1
-#     addprocs(Sys.CPU_CORES - 3 , exeflags = ["--code-coverage=user", "--inline=no", "--check-bounds=yes"])
-# else
-#     addprocs(Sys.CPU_CORES - 3, exeflags = "--check-bounds=yes")
-# end
-# @show nprocs()
+if !("Simplices" in keys(installed))
+    Pkg.clone("https://github.com/kahaaga/Simplices.jl")
+else
+    using Simplices
+end
 
 using Simplices
 using SimplexSplitting

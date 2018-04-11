@@ -16,7 +16,7 @@ towards the origin until it lies within the convex hull of all preceding points.
 function invariantize_embedding(
       embedding::Array{Float64, 2};
       remove_points = false,
-      max_point_remove::Int = ceil(Int, size(embedding, 1)*0.05)
+      max_point_remove::Int = ceil(Int, size(embedding, 1)*0.2)
       )
 
    if size(unique(embedding, 1)) < size(embedding)

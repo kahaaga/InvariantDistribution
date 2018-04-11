@@ -1,28 +1,26 @@
 __precompile__(true)
 
 module InvariantDistribution
-
-
-installed = Pkg.installed()
-if !("Pycall" in keys(installed))
-    Pkg.add("PyCall")
-end
-
-if !("Conda" in keys(installed))
-    Pkg.add("Conda")
-    using Conda; Conda.add("scipy")
-end
-
-if !("Simplices" in keys(installed))
-    Pkg.clone("https://github.com/kahaaga/Simplices.jl")
-else
-    using Simplices
-end
-using PyCall, Conda; Conda.add("scipy")
-ENV["PYTHON"]= ""; Pkg.build("PyCall"); using PyCall
-
-using Simplices, SimplexSplitting, Parameters,
-    StaticArrays, Distributions, InplaceOps
+#
+# using Simplices, SimplexSplitting, Parameters,
+#     StaticArrays, Distributions, InplaceOps
+#
+# installed = Pkg.installed()
+# if !("Pycall" in keys(installed))
+#     Pkg.add("PyCall")
+#     ENV["PYTHON"]= ""; Pkg.build("PyCall")
+# end
+#
+# if !("Conda" in keys(installed))
+#     Pkg.add("Conda")
+#     using Conda; Conda.add("scipy")
+# end
+#
+# if !("Simplices" in keys(installed))
+#     Pkg.clone("https://github.com/kahaaga/Simplices.jl")
+# else
+#     using Simplices
+# end
 
 include("invariant_maps.jl")
 include("statespace.jl")
@@ -54,7 +52,7 @@ export markovmatrix,
     mm_dd3,
     mm_dd4
 
-t = triang_from_embedding(Embedding(invariant_gaussian_embedding(npts = 8, covariance = 0.5, tau = 1)))
+t = triang_from_embedding(Embedding(invariant_gaussian_embedding(npts = 14, cov = 0.5, tau = 1)))
 mm_dd4(t)
 
 end # module

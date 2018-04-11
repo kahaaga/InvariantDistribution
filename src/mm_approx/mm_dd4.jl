@@ -57,7 +57,7 @@ function fill_at_inds!(into, from, inds)
     end
 end
 
-function contained!(signs::Vector{Float64}, s_arr, sx, point, dim)
+function contained!(signs, s_arr, sx, point, dim)
     # Redefine the temporary simplex. This is in-place, so we don't allocate
     # memory. We could also have re-initialised `signs`, but since we're never
     # comparing more than two consecutive signs, this is not necessary.

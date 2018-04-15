@@ -6,6 +6,6 @@ using SimplexSplitting, InvariantDistribution
     mm = mm_dd(t_ex)
     @test all(sum(mm, 2) .≈ 1)
 
-    invdist = estimate_invdist(mm)
+    invdist = left_eigenvector(mm)
     @test sum(invdist.dist) ≈ 1
 end

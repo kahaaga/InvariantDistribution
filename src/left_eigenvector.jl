@@ -16,7 +16,7 @@ Compute the invariant probability distribution from a square Markov matrix `M`.
 This is done by repeated application of `M` on an initially random distribution
 until the distribution converges.
 """
-function estimate_invdist(
+function left_eigenvector(
         M::AbstractArray{Float64, 2};
         N::Int = 100,
         tolerance::Float64 = 1/10^5,

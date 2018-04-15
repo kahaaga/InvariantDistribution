@@ -57,7 +57,7 @@ function TO_from_binning(embedding::AbstractArray{Float64, 2}, n_bins::Int)
         binning[i, :] = ceil((embedding[i, :] - bottom) ./ binsizes)
     end
 
-    first_inds, group_inds, all_inds = unique_rows_info(embedding)
+    first_inds, group_inds, all_inds = unique_rows_info(binning)
 
     # Initialise transfer (Perron-Frobenius) operator as a sparse matrix
     # (keep track of indices and values in separate columns for now)
@@ -79,7 +79,6 @@ function TO_from_binning(embedding::AbstractArray{Float64, 2}, n_bins::Int)
         # If there is only one point and it happens to be the last, we skip it,
         # because we don't know its image.
         if n_appearancesᵢ == 1
-
             if !(i == all_inds[end])
                 max_row += 1
 
@@ -106,7 +105,6 @@ function TO_from_binning(embedding::AbstractArray{Float64, 2}, n_bins::Int)
             # each of these unique image points are repeated.
             unique_indices = unique(bin_image_indices)
             for j in 1:length(unique_indices)
-
                 num_of_i_in_j = sum(bin_image_indices .== unique_indices[j])
                 max_row += 1
 
